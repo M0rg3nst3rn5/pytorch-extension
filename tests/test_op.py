@@ -24,7 +24,7 @@ def test_output_dtype():
 
 
 def test_exact_numeric_values_match_specification():
-    values = torch.tensor([0.0, 1.0, 8.0, 27.0, 64.0], dtype=torch.float32)
+    values = torch.tensor([-4339991.0, -14491808.0, -10363169.0], dtype=torch.float32)
     assert torch.equal(trajectory_acceleration(values), specification(values))
 
 

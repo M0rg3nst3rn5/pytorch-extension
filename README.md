@@ -36,7 +36,8 @@ From the repository directory:
 ```bash
 python3 -m venv /tmp/trajectory-build
 /tmp/trajectory-build/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
-/tmp/trajectory-build/bin/pip wheel . --no-deps -w dist
+source /tmp/trajectory-build/bin/activate
+make wheel
 ls dist
 ```
 

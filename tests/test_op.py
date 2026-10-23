@@ -7,6 +7,9 @@ from trajectory_ops import trajectory_acceleration
 def specification(values):
     return torch.diff(values, n=2, dim=-1)
 
+def test_input_dtype():
+    values = [0.0, 1.0, 8.0]
+    assert trajectory_acceleration(values).dtype != torch.float32
 
 def test_output_shape():
     values = torch.zeros((2, 3, 7), dtype=torch.float32)

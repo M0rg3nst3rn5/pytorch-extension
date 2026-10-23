@@ -90,7 +90,9 @@ The operation calculates trajectory acceleration along the last dimension. It ac
 
 ## Project note
 
-The shorter expression `x[i + 2] - 2 * x[i + 1] + x[i]` rounded differently from `torch.diff`: on `[-4339991.0, -14491808.0, -10363169.0]` it produced `14280457.0` instead of `14280456.0`. The C++ loop therefore keeps two sequential subtractions. The fix landed in commit `b189393`.
+A new test, `test_input_dtype` (commit `3444f2a`), passed a plain Python list to the op and asserted that the output was *not* `float32`. The extension only accepts tensors, and a float32 input always gives a float32 output, so the test could never pass. It surfaced as a red test: after the list was replaced with a tensor, `pytest` failed with `assert torch.float32 != torch.float32` (1 failed, 6 passed). The fix in commit `994b3a6` passes a `float32` tensor and asserts `dtype == torch.float32`; the suite then showed `7 passed`.
+
+The C++ loop computes `(x[i + 2] - x[i + 1]) - (x[i + 1] - x[i])`, the same two sequential subtractions as `torch.diff`. The shorter expression `x[i + 2] - 2 * x[i + 1] + x[i]` rounds differently: on `[-4339991.0, -14491808.0, -10363169.0]` it gives `14280457.0` instead of `14280456.0`, which would fail the exact `torch.equal` comparison.
 
 Inputs with fewer than three values on the last dimension are intentionally unsupported and raise `RuntimeError`.
 

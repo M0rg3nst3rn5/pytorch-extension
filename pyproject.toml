@@ -2,7 +2,7 @@
 name = "trajectory-ops"
 version = "0.1.0"
 description = "A small CPU PyTorch extension for trajectory acceleration"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = []
 
 [dependency-groups]

@@ -36,8 +36,7 @@ From the repository directory:
 ```bash
 python3 -m venv /tmp/trajectory-build
 /tmp/trajectory-build/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
-source /tmp/trajectory-build/bin/activate
-make wheel
+/tmp/trajectory-build/bin/pip wheel . --no-deps -w dist
 ls dist
 ```
 
@@ -95,11 +94,11 @@ The shorter expression `x[i + 2] - 2 * x[i + 1] + x[i]` rounded differently from
 
 Inputs with fewer than three values on the last dimension are intentionally unsupported and raise `RuntimeError`.
 
-Profile the installed wheel on a `(1024, 7, 500)` input, from the repository directory:
+Profile the installed wheel on a `(1024, 7, 500)` float32 input (about 3.6 million values), inside the project image built above, from the repository directory:
 
 ```bash
-cp tools/profile.py /tmp/trajectory-profile.py
-(cd /tmp && /tmp/trajectory-test/bin/python -m cProfile -s cumulative /tmp/trajectory-profile.py)
+docker run --rm -v "$PWD/tools:/tools:ro" -w /tmp trajectory-ops:0.1 \
+  python3 -m cProfile -s cumulative /tools/profile.py
 ```
 
-This development machine reported `3.370 seconds`, including PyTorch import time.
+cProfile reported `cumtime` `0.005` seconds for the single `trajectory_acceleration` call, about half the `0.009` seconds that `torch.randn` took to generate the same input.
